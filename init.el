@@ -6,6 +6,7 @@
 (require 'use-package)
 (require 'diminish)                ;; if you use :diminish
 ;; (require 'bind-key)                ;; if you use any :bind variant
+(require 'cc-mode)
 (require 'compile)
 (setq compilation-scroll-output t)
 
@@ -60,7 +61,8 @@
   (yas-global-mode 1))
 
 (use-package clang-format
-  :bind ("C-M-\\" . clang-format-buffer))
+  :bind (:map c-mode-map ("C-M-\\" . clang-format-buffer)
+	      :map c++-mode-map ("C-M-\\" . clang-format-buffer)))
 
 (use-package move-text
   :bind (([S-up] . move-text-up)
