@@ -1,8 +1,10 @@
 ;;; package --- Summary Marcin Kacprzak emacs configuration
 ;;; Commentary:
 ;;; Code:
+(require 'package)
+(package-initialize)
 (require 'use-package)
-;; (require 'diminish)                ;; if you use :diminish
+(require 'diminish)                ;; if you use :diminish
 ;; (require 'bind-key)                ;; if you use any :bind variant
 (require 'compile)
 (setq compilation-scroll-output t)
@@ -12,13 +14,15 @@
 ;; More space on my tiny monitor
 (scroll-bar-mode -1)
 (menu-bar-mode -1)
+;; Disables bell sound
+(setq visible-bell 1)
 ;; Same as in Prelude package
 (global-set-key (kbd "<f12>") 'menu-bar-mode)
 ;; Simulates functionality from popular IDE's
 (global-set-key (kbd "<S-return>") "\C-e\C-m")
 (define-key key-translation-map (kbd "<menu>") 'event-apply-control-modifier)
 ;; More `ls' like look
-(setq dired-listing-switches "-ghol")
+;;(setq dired-listing-switches "-ghol")
 ;; Default compilation window was driving me nuts
 (use-package popwin
   :config
@@ -34,6 +38,7 @@
 (use-package helm
   :bind (("M-x" . helm-M-x)
          ("C-x C-f" . helm-find-files)
+	 ("C-x b" . helm-mini)
          ("C-x C-b" . helm-buffers-list)
 	 ("M-y" . helm-show-kill-ring)
          ([f10] . helm-recentf))
@@ -50,6 +55,7 @@
 
 (add-to-list 'load-path "~/.emacs.d/plugins/yasnippet")
 (use-package yasnippet
+  :diminish yas-minor-mode
   :config
   (yas-global-mode 1))
 
@@ -85,10 +91,12 @@
 (require 'projectile-speedbar)
 
 (use-package flycheck
+  :diminish flycheck-mode
   :config
   (global-flycheck-mode))
 
 (use-package guru-mode
+  :diminish guru-mode
   :config
   (guru-global-mode +1))
 
@@ -97,6 +105,7 @@
   (nyan-mode +1))
 
 (use-package hungry-delete
+  :diminish hungry-delete-mode
   :config
   (global-hungry-delete-mode))
 
@@ -105,7 +114,11 @@
  gdb-many-windows t
  gdb-show-main t)
 
+(use-package company
+  :diminish company-mode)
+
 (use-package irony
+  :diminish irony-mode
   :init
   (add-hook 'c++-mode-hook 'irony-mode)
   (add-hook 'c-mode-hook 'irony-mode)
