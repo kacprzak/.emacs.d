@@ -5,7 +5,7 @@
 (package-initialize)
 (require 'use-package)
 (require 'diminish)                ;; if you use :diminish
-;; (require 'bind-key)                ;; if you use any :bind variant
+(require 'bind-key)                ;; if you use any :bind variant
 (require 'cc-mode)
 (require 'compile)
 (setq compilation-scroll-output t)
