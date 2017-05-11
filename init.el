@@ -80,6 +80,10 @@
   :config
   (projectile-mode +1))
 
+(use-package helm-projectile
+  :config
+  (helm-projectile-on))
+
 (use-package cmake-ide
   :config
   (cmake-ide-setup))
@@ -90,7 +94,7 @@
   :bind
   ("C-c s" . sr-speedbar-toggle))
 
-(require 'projectile-speedbar)
+(use-package projectile-speedbar)
 
 (use-package flycheck
   :diminish flycheck-mode
@@ -146,11 +150,12 @@
 (global-set-key "\t" 'company-indent-or-complete-common)
 (add-hook 'after-init-hook 'global-company-mode)
 
-(require 'company-irony-c-headers)
-;; Load with `irony-mode` as a grouped backend
-(eval-after-load 'company
-  '(add-to-list
-    'company-backends '(company-irony-c-headers company-irony)))
+(use-package company-irony-c-headers
+  :config
+  ;; Load with `irony-mode` as a grouped backend
+  (eval-after-load 'company
+    '(add-to-list
+      'company-backends '(company-irony-c-headers company-irony))))
 
 (add-hook 'c-mode-common-hook
 	  (lambda ()
@@ -158,8 +163,6 @@
 	      (ggtags-mode 1))))
 
 (add-hook 'c-mode-common-hook 'diff-hl-mode)
-
-;;(add-to-list 'company-backends 'company-c-headers)
 
 (eval-after-load 'flycheck
   '(add-hook 'flycheck-mode-hook #'flycheck-irony-setup))
