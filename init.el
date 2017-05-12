@@ -2,16 +2,25 @@
 ;;; Commentary:
 ;;; Code:
 (require 'package)
+
+;;(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+
 (package-initialize)
-(require 'use-package)
-(require 'diminish)                ;; if you use :diminish
-(require 'bind-key)                ;; if you use any :bind variant
+
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+
+(eval-when-compile
+  (require 'use-package))
+(require 'diminish)
+(require 'bind-key)
+
 (require 'cc-mode)
 (require 'compile)
 (setq compilation-scroll-output t)
 
-;;(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 ;; More space on my tiny monitor
 (scroll-bar-mode -1)
 (menu-bar-mode -1)
@@ -46,8 +55,11 @@
   :config
   (which-key-mode 1))
 
-(use-package smartparens-config
-  :ensure smartparens)
+(use-package smartparens
+  :diminish smartparens-mode
+  :config
+  (require 'smartparens-config)
+  (smartparens-global-mode))
 
 ;; Default compilation window was driving me nuts
 (use-package popwin
@@ -64,9 +76,9 @@
 (use-package helm
   :bind (("M-x" . helm-M-x)
          ("C-x C-f" . helm-find-files)
-	 ("C-x b" . helm-mini)
+         ("C-x b" . helm-mini)
          ("C-x C-b" . helm-buffers-list)
-	 ("M-y" . helm-show-kill-ring)
+         ("M-y" . helm-show-kill-ring)
          ([f10] . helm-recentf))
   :init
   (setq helm-split-window-in-side-p t))
@@ -84,19 +96,19 @@
 
 (use-package clang-format
   :bind (:map c-mode-map ("C-M-\\" . clang-format-buffer)
-	      :map c++-mode-map ("C-M-\\" . clang-format-buffer)))
+              :map c++-mode-map ("C-M-\\" . clang-format-buffer)))
 
 (use-package move-text
   :bind (([S-up] . move-text-up)
-	 ([S-down] . move-text-down)))
+         ([S-down] . move-text-down)))
 
 (use-package magit
   :bind ("C-x g" . magit-status))
 
 (use-package projectile
   :bind (("<f5>" . projectile-run-project)
-	 ("<f6>" . projectile-compile-project)
-	 ("<f8>" . projectile-test-project))
+         ("<f6>" . projectile-compile-project)
+         ("<f8>" . projectile-test-project))
   :init
   ;;(setq projectile-keymap-prefix (kbd "s-p"))
   :config
@@ -180,9 +192,9 @@
       'company-backends '(company-irony-c-headers company-irony))))
 
 (add-hook 'c-mode-common-hook
-	  (lambda ()
-	    (when (derived-mode-p 'c-mode 'c++-mode 'java-mode 'asm-mode)
-	      (ggtags-mode 1))))
+          (lambda ()
+            (when (derived-mode-p 'c-mode 'c++-mode 'java-mode 'asm-mode)
+              (ggtags-mode 1))))
 
 (add-hook 'c-mode-common-hook 'diff-hl-mode)
 
