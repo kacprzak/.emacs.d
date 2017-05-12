@@ -21,6 +21,9 @@
 (require 'compile)
 (setq compilation-scroll-output t)
 
+;; use-package always auto install packages
+;;(setq use-package-always-ensure t)
+
 ;; More space on my tiny monitor
 (scroll-bar-mode -1)
 (menu-bar-mode -1)
@@ -60,6 +63,10 @@
   :config
   (require 'smartparens-config)
   (smartparens-global-mode))
+
+(use-package expand-region
+  :bind
+  (("C-=" . er/expand-region)))
 
 ;; Default compilation window was driving me nuts
 (use-package popwin
