@@ -19,11 +19,36 @@
 (setq visible-bell 1)
 ;; Same as in Prelude package
 (global-set-key (kbd "<f12>") 'menu-bar-mode)
+
 ;; Simulates functionality from popular IDE's
-(global-set-key (kbd "<S-return>") "\C-e\C-m")
-(define-key key-translation-map (kbd "<menu>") 'event-apply-control-modifier)
-;; More `ls' like look
-;;(setq dired-listing-switches "-ghol")
+(defun newline-without-break-of-line ()
+  "Newline without break of line."
+  (interactive)
+  (let ((oldpos (point)))
+    (end-of-line)
+    (newline-and-indent)))
+
+(global-set-key (kbd "<S-return>") 'newline-without-break-of-line)
+
+(defun newline-before-without-break-of-line ()
+  "Newline before coursor without break of line."
+  (interactive)
+  (let ((oldpos (point)))
+    (beginning-of-line)
+    (open-line 1)
+    (indent-according-to-mode)))
+
+(global-set-key (kbd "<C-M-return>") 'newline-before-without-break-of-line)
+
+
+(use-package which-key
+  :diminish which-key-mode
+  :config
+  (which-key-mode 1))
+
+(use-package smartparens-config
+  :ensure smartparens)
+
 ;; Default compilation window was driving me nuts
 (use-package popwin
   :config
@@ -44,10 +69,7 @@
 	 ("M-y" . helm-show-kill-ring)
          ([f10] . helm-recentf))
   :init
-  (setq helm-split-window-in-side-p t)
-  :config
-  ;;(helm-autoresize-mode t)
-  )
+  (setq helm-split-window-in-side-p t))
 
 (use-package helm-flycheck
   :config
