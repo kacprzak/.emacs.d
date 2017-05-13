@@ -56,6 +56,8 @@
 
 (global-set-key (kbd "<C-M-return>") 'newline-before-without-break-of-line)
 
+(diminish 'abbrev-mode)
+(diminish 'auto-revert-mode)
 
 (use-package which-key
   :diminish which-key-mode
