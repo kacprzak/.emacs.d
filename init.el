@@ -24,6 +24,10 @@
 ;; use-package always auto install packages
 ;;(setq use-package-always-ensure t)
 
+(use-package doom-themes
+  :config
+  (load-theme 'doom-molokai t))
+
 ;; More space on my tiny monitor
 (scroll-bar-mode -1)
 (menu-bar-mode -1)
@@ -128,14 +132,6 @@
 (use-package cmake-ide
   :config
   (cmake-ide-setup))
-
-(use-package sr-speedbar
-  :init
-  (setq speedbar-use-images nil)
-  :bind
-  ("C-c s" . sr-speedbar-toggle))
-
-(use-package projectile-speedbar)
 
 (use-package flycheck
   :diminish flycheck-mode
