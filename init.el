@@ -79,10 +79,6 @@
   :config
   (popwin-mode 1))
 
-(use-package dashboard
-  :config
-  (dashboard-setup-startup-hook))
-
 (use-package ace-jump-mode
   :bind ("C-." . ace-jump-mode))
 
@@ -160,7 +156,11 @@
  gdb-show-main t)
 
 (use-package company
-  :diminish company-mode)
+  :diminish company-mode
+  :init
+  (global-set-key "\t" 'company-indent-or-complete-common)
+  :config
+  (global-company-mode))
 
 (use-package irony
   :diminish irony-mode
@@ -185,9 +185,6 @@
 (add-to-list 'auto-mode-alist '("\\.frag\\'" . glsl-mode))
 (add-to-list 'auto-mode-alist '("\\.geom\\'" . glsl-mode))
 (push 'glsl-mode irony-supported-major-modes)
-
-(global-set-key "\t" 'company-indent-or-complete-common)
-(add-hook 'after-init-hook 'global-company-mode)
 
 (use-package company-irony-c-headers
   :config
