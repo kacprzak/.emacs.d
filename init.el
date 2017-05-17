@@ -31,6 +31,8 @@
 ;; More space on my tiny monitor
 (scroll-bar-mode -1)
 (menu-bar-mode -1)
+(tool-bar-mode -1)
+(global-hl-line-mode 1)
 ;; Disables bell sound
 (setq visible-bell 1)
 ;; Same as in Prelude package
