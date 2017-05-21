@@ -35,8 +35,13 @@
 (global-hl-line-mode 1)
 ;; Disables bell sound
 (setq visible-bell 1)
+;; Show empty lines
+(setq-default indicate-empty-lines t)
+(show-paren-mode t)
+(setq column-number-mode t)
 ;; Same as in Prelude package
 (global-set-key (kbd "<f12>") 'menu-bar-mode)
+(global-set-key (kbd "M-/") 'hippie-expand)
 
 ;; Simulates functionality from popular IDE's
 (defun newline-without-break-of-line ()
@@ -61,6 +66,16 @@
 (diminish 'abbrev-mode)
 (diminish 'auto-revert-mode)
 
+(use-package undo-tree
+  :config
+  (global-undo-tree-mode 1))
+
+(use-package key-chord
+  :config
+  (key-chord-mode t)
+  (key-chord-define-global "jk" 'ace-jump-char-mode)
+  (key-chord-define-global "jj" 'ace-jump-word-mode))
+
 (use-package which-key
   :diminish which-key-mode
   :config
@@ -68,8 +83,10 @@
 
 (use-package smartparens
   :diminish smartparens-mode
+  :init
   :config
   (require 'smartparens-config)
+  (setq sp-highlight-pair-overlay nil)
   (smartparens-global-mode))
 
 (use-package expand-region
@@ -209,3 +226,4 @@
 (setq auto-mode-alist
       (cons '("\\.m$" . octave-mode) auto-mode-alist))
 ;;; init.el ends here
+
