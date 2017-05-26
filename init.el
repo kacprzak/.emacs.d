@@ -22,7 +22,7 @@
 (setq compilation-scroll-output t)
 
 ;; use-package always auto install packages
-;;(setq use-package-always-ensure t)
+;(setq use-package-always-ensure t)
 
 (use-package doom-themes
   :config
@@ -204,7 +204,8 @@
 (add-to-list 'auto-mode-alist '("\\.vert\\'" . glsl-mode))
 (add-to-list 'auto-mode-alist '("\\.frag\\'" . glsl-mode))
 (add-to-list 'auto-mode-alist '("\\.geom\\'" . glsl-mode))
-(push 'glsl-mode irony-supported-major-modes)
+(if (boundp 'irony-supported-major-modes)
+    (push 'glsl-mode irony-supported-major-modes))
 
 (use-package company-irony-c-headers
   :config
@@ -220,8 +221,10 @@
 
 (add-hook 'c-mode-common-hook 'diff-hl-mode)
 
-(eval-after-load 'flycheck
-  '(add-hook 'flycheck-mode-hook #'flycheck-irony-setup))
+(use-package flycheck-irony
+  :init
+  (eval-after-load 'flycheck
+    '(add-hook 'flycheck-mode-hook #'flycheck-irony-setup)))
 
 (autoload 'octave-mode "octave-mod" nil t)
 (setq auto-mode-alist
