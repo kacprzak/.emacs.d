@@ -222,7 +222,7 @@
 (add-hook 'c-mode-common-hook 'diff-hl-mode)
 
 (use-package flycheck-irony
-  :init
+  :config
   (eval-after-load 'flycheck
     '(add-hook 'flycheck-mode-hook #'flycheck-irony-setup)))
 
