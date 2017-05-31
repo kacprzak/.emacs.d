@@ -57,12 +57,6 @@
 (setq column-number-mode t)
 (size-indication-mode t)
 
-;; Newline at end of file
-(setq require-final-newline t)
-
-;; Delete the selection with a keypress
-(delete-selection-mode t)
-
 ;; Store all backup and autosave files in the tmp dir
 (setq backup-directory-alist
       `((".*" . ,temporary-file-directory)))
