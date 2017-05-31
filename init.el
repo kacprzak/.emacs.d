@@ -3,7 +3,7 @@
 ;;; Code:
 (require 'package)
 
-;;(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 
 (package-initialize)
@@ -28,6 +28,20 @@
   :config
   (load-theme 'doom-molokai t))
 
+;; Nice scrolling
+(setq scroll-margin 0
+      scroll-conservatively 100000
+      scroll-preserve-screen-position 1)
+
+;; Enable y/n answers
+(fset 'yes-or-no-p 'y-or-n-p)
+
+;; Newline at end of file
+(setq require-final-newline t)
+
+;; Delete the selection with a keypress
+(delete-selection-mode t)
+
 ;; More space on my tiny monitor
 (scroll-bar-mode -1)
 (menu-bar-mode -1)
@@ -37,34 +51,67 @@
 (setq visible-bell 1)
 ;; Show empty lines
 (setq-default indicate-empty-lines t)
+;; Matching parenthesis
 (show-paren-mode t)
+;; Modeline
 (setq column-number-mode t)
+(size-indication-mode t)
+
+;; Newline at end of file
+(setq require-final-newline t)
+
+;; Delete the selection with a keypress
+(delete-selection-mode t)
+
+;; Store all backup and autosave files in the tmp dir
+(setq backup-directory-alist
+      `((".*" . ,temporary-file-directory)))
+(setq auto-save-file-name-transforms
+      `((".*" ,temporary-file-directory t)))
+
+;; Revert buffers automatically when underlying files are changed externally
+(global-auto-revert-mode t)
+
+(prefer-coding-system 'utf-8)
+(set-default-coding-systems 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+
 ;; Same as in Prelude package
 (global-set-key (kbd "<f12>") 'menu-bar-mode)
 (global-set-key (kbd "M-/") 'hippie-expand)
 
-;; Simulates functionality from popular IDE's
-(defun newline-without-break-of-line ()
-  "Newline without break of line."
-  (interactive)
-  (let ((oldpos (point)))
-    (end-of-line)
-    (newline-and-indent)))
-
-(global-set-key (kbd "<S-return>") 'newline-without-break-of-line)
-
-(defun newline-before-without-break-of-line ()
-  "Newline before coursor without break of line."
-  (interactive)
-  (let ((oldpos (point)))
-    (beginning-of-line)
-    (open-line 1)
-    (indent-according-to-mode)))
-
-(global-set-key (kbd "<C-M-return>") 'newline-before-without-break-of-line)
-
 (diminish 'abbrev-mode)
 (diminish 'auto-revert-mode)
+
+(use-package crux
+  :ensure t
+  :bind (("C-c o" . crux-open-with)
+         ("M-o" . crux-smart-open-line)
+         ("C-c n" . crux-cleanup-buffer-or-region)
+         ("C-c f" . crux-recentf-ido-find-file)
+         ("C-M-z" . crux-indent-defun)
+         ("C-c u" . crux-view-url)
+         ("C-c e" . crux-eval-and-replace)
+         ("C-c w" . crux-swap-windows)
+         ("C-c D" . crux-delete-file-and-buffer)
+         ("C-c r" . crux-rename-buffer-and-file)
+         ("C-c t" . crux-visit-term-buffer)
+         ("C-c k" . crux-kill-other-buffers)
+         ("C-c TAB" . crux-indent-rigidly-and-copy-to-clipboard)
+         ("C-c I" . crux-find-user-init-file)
+         ("C-c S" . crux-find-shell-init-file)
+         ("s-r" . crux-recentf-ido-find-file)
+         ("s-j" . crux-top-join-line)
+         ("C-^" . crux-top-join-line)
+         ("s-k" . crux-kill-whole-line)
+         ("C-<backspace>" . crux-kill-line-backwards)
+         ("s-o" . crux-smart-open-line-above)
+         ([remap move-beginning-of-line] . crux-move-beginning-of-line)
+         ([(shift return)] . crux-smart-open-line)
+         ([(control shift return)] . crux-smart-open-line-above)
+         ([remap kill-whole-line] . crux-kill-whole-line)
+	 ("C-c s" . crux-ispell-word-then-abbrev)))
 
 (use-package undo-tree
   :diminish undo-tree-mode
@@ -89,6 +136,11 @@
   (require 'smartparens-config)
   (setq sp-highlight-pair-overlay nil)
   (smartparens-global-mode))
+
+(use-package windmove
+  :config
+  ;; use shift + arrow keys to switch between visible buffers
+  (windmove-default-keybindings))
 
 (use-package expand-region
   :bind
@@ -128,8 +180,8 @@
               :map c++-mode-map ("C-M-\\" . clang-format-buffer)))
 
 (use-package move-text
-  :bind (([S-up] . move-text-up)
-         ([S-down] . move-text-down)))
+  :bind (([M-up] . move-text-up)
+         ([M-down] . move-text-down)))
 
 (use-package magit
   :bind ("C-x g" . magit-status))
