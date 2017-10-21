@@ -123,13 +123,13 @@
   :config
   (which-key-mode 1))
 
-(use-package smartparens
-  :diminish smartparens-mode
-  :init
+(use-package all-the-icons)
+
+(use-package neotree
+  :bind
+  (("<f8>" . neotree-toggle))
   :config
-  (require 'smartparens-config)
-  (setq sp-highlight-pair-overlay nil)
-  (smartparens-global-mode))
+  (setq neo-theme (if (display-graphic-p) 'icons 'arrow)))
 
 (use-package windmove
   :config
@@ -156,7 +156,7 @@
          ("M-y" . helm-show-kill-ring)
          ([f10] . helm-recentf))
   :init
-  (setq helm-split-window-in-side-p t))
+  (setq helm-split-window-inside-p t))
 
 (use-package helm-flycheck
   :config
@@ -183,7 +183,7 @@
 (use-package projectile
   :bind (("<f5>" . projectile-run-project)
          ("<f6>" . projectile-compile-project)
-         ("<f8>" . projectile-test-project))
+         ("<f7>" . projectile-test-project))
   :init
   ;;(setq projectile-keymap-prefix (kbd "s-p"))
   :config
@@ -210,11 +210,6 @@
 (use-package nyan-mode
   :config
   (nyan-mode +1))
-
-(use-package hungry-delete
-  :diminish hungry-delete-mode
-  :config
-  (global-hungry-delete-mode))
 
 (require 'gdb-mi)
 (setq
