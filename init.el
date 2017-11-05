@@ -22,7 +22,7 @@
 (setq compilation-scroll-output t)
 
 ;; use-package always auto install packages
-;(setq use-package-always-ensure t)
+					;(setq use-package-always-ensure t)
 
 (use-package doom-themes
   :config
@@ -73,7 +73,7 @@
 
 ;; Same as in Prelude package
 (global-set-key (kbd "<f12>") 'menu-bar-mode)
-(global-set-key (kbd "M-/") 'hippie-expand)
+;;(global-set-key (kbd "M-/") 'hippie-expand)
 
 (diminish 'abbrev-mode)
 (diminish 'auto-revert-mode)
@@ -116,7 +116,9 @@
   :config
   (key-chord-mode t)
   (key-chord-define-global "jk" 'ace-jump-char-mode)
-  (key-chord-define-global "jj" 'ace-jump-word-mode))
+  (key-chord-define-global "jj" 'ace-jump-word-mode)
+  (key-chord-define-global "uu" 'undo-tree-visualize)
+  (key-chord-define-global "JJ" 'crux-switch-to-previous-buffer))
 
 (use-package which-key
   :diminish which-key-mode
