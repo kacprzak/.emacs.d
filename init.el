@@ -22,7 +22,7 @@
 (setq compilation-scroll-output t)
 
 ;; use-package always auto install packages
-					;(setq use-package-always-ensure t)
+(setq use-package-always-ensure t)
 
 (use-package doom-themes
   :config
@@ -74,6 +74,7 @@
 ;; Same as in Prelude package
 (global-set-key (kbd "<f12>") 'menu-bar-mode)
 ;;(global-set-key (kbd "M-/") 'hippie-expand)
+(global-set-key (kbd "C-x C-o") 'ff-find-other-file)
 
 (diminish 'abbrev-mode)
 (diminish 'auto-revert-mode)
@@ -83,7 +84,7 @@
   :bind (("C-c o" . crux-open-with)
          ("M-o" . crux-smart-open-line)
          ("C-c n" . crux-cleanup-buffer-or-region)
-         ("C-c f" . crux-recentf-ido-find-file)
+         ("C-c f" . crux-recentf-find-file)
          ("C-M-z" . crux-indent-defun)
          ("C-c u" . crux-view-url)
          ("C-c e" . crux-eval-and-replace)
@@ -95,7 +96,7 @@
          ("C-c TAB" . crux-indent-rigidly-and-copy-to-clipboard)
          ("C-c I" . crux-find-user-init-file)
          ("C-c S" . crux-find-shell-init-file)
-         ("s-r" . crux-recentf-ido-find-file)
+         ("s-r" . crux-recentf-find-file)
          ("s-j" . crux-top-join-line)
          ("C-^" . crux-top-join-line)
          ("s-k" . crux-kill-whole-line)
@@ -150,20 +151,25 @@
 (use-package ace-jump-mode
   :bind ("C-." . ace-jump-mode))
 
-(use-package helm
-  :bind (("M-x" . helm-M-x)
-         ("C-x C-f" . helm-find-files)
-         ("C-x b" . helm-mini)
-         ("C-x C-b" . helm-buffers-list)
-         ("M-y" . helm-show-kill-ring)
-         ([f10] . helm-recentf))
-  :init
-  (setq helm-split-window-inside-p t))
+;; (use-package helm
+;;   :bind (("M-x" . helm-M-x)
+;;          ("C-x C-f" . helm-find-files)
+;;          ("C-x b" . helm-mini)
+;;          ("C-x C-b" . helm-buffers-list)
+;;          ("M-y" . helm-show-kill-ring)
+;;          ([f10] . helm-recentf))
+;;   :init
+;;   (setq helm-split-window-inside-p t))
 
-(use-package helm-flycheck
+;; (use-package helm-flycheck
+;;   :config
+;;   (eval-after-load 'flycheck
+;;     '(define-key flycheck-mode-map (kbd "C-c ! h") 'helm-flycheck)))
+
+(use-package ivy
+  :diminish ivy-mode
   :config
-  (eval-after-load 'flycheck
-    '(define-key flycheck-mode-map (kbd "C-c ! h") 'helm-flycheck)))
+  (ivy-mode t))
 
 (add-to-list 'load-path "~/.emacs.d/plugins/yasnippet")
 (use-package yasnippet
@@ -191,9 +197,9 @@
   :config
   (projectile-mode +1))
 
-(use-package helm-projectile
-  :config
-  (helm-projectile-on))
+;; (use-package helm-projectile
+;;   :config
+;;   (helm-projectile-on))
 
 (use-package cmake-ide
   :config
