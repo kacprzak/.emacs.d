@@ -76,6 +76,11 @@
 ;;(global-set-key (kbd "M-/") 'hippie-expand)
 (global-set-key (kbd "C-x C-o") 'ff-find-other-file)
 
+(recentf-mode 1)
+(setq recentf-max-menu-items 25)
+(setq recentf-max-saved-items 25)
+(global-set-key (kbd "C-x C-r") 'recentf-open-files)
+
 (diminish 'abbrev-mode)
 (diminish 'auto-revert-mode)
 
@@ -113,6 +118,8 @@
   :config
   (global-undo-tree-mode 1))
 
+(use-package ace-jump-mode)
+
 (use-package key-chord
   :config
   (key-chord-mode t)
@@ -143,33 +150,24 @@
   :bind
   (("C-=" . er/expand-region)))
 
-;; Default compilation window was driving me nuts
-(use-package popwin
-  :config
-  (popwin-mode 1))
-
-(use-package ace-jump-mode
-  :bind ("C-." . ace-jump-mode))
-
-;; (use-package helm
-;;   :bind (("M-x" . helm-M-x)
-;;          ("C-x C-f" . helm-find-files)
-;;          ("C-x b" . helm-mini)
-;;          ("C-x C-b" . helm-buffers-list)
-;;          ("M-y" . helm-show-kill-ring)
-;;          ([f10] . helm-recentf))
-;;   :init
-;;   (setq helm-split-window-inside-p t))
-
-;; (use-package helm-flycheck
-;;   :config
-;;   (eval-after-load 'flycheck
-;;     '(define-key flycheck-mode-map (kbd "C-c ! h") 'helm-flycheck)))
-
 (use-package ivy
   :diminish ivy-mode
+  :bind (("C-c C-r" . 'ivy-resume))
   :config
   (ivy-mode t))
+
+(use-package counsel
+  :bind (( "M-x" . 'counsel-M-x)
+	 ( "C-x C-f" . 'counsel-find-file)
+	 ( "<f1> f" . 'counsel-describe-function)
+	 ( "<f1> v" . 'counsel-describe-variable)
+	 ( "<f1> l" . 'counsel-find-library)
+	 ( "<f2> i" . 'counsel-info-lookup-symbol)
+	 ( "<f2> u" . 'counsel-unicode-char)))
+
+(use-package swiper
+  :bind
+  ("C-s" . 'swiper))
 
 (add-to-list 'load-path "~/.emacs.d/plugins/yasnippet")
 (use-package yasnippet
@@ -197,18 +195,9 @@
   :config
   (projectile-mode +1))
 
-;; (use-package helm-projectile
-;;   :config
-;;   (helm-projectile-on))
-
 (use-package cmake-ide
   :config
   (cmake-ide-setup))
-
-(use-package flycheck
-  :diminish flycheck-mode
-  :config
-  (global-flycheck-mode))
 
 (use-package guru-mode
   :diminish guru-mode
@@ -231,52 +220,23 @@
   :config
   (global-company-mode))
 
-(use-package irony
-  :diminish irony-mode
+(use-package glsl-mode)
+
+(use-package company-glsl
+  :config
+  (when (executable-find "glslangValidator")
+    (add-to-list 'company-backends 'company-glsl)))
+
+(use-package lsp-mode
+  :commands lsp
   :init
-  (add-hook 'c++-mode-hook 'irony-mode)
-  (add-hook 'c-mode-hook 'irony-mode)
-  (add-hook 'objc-mode-hook 'irony-mode)
-  :config
-  (defun my-irony-mode-hook ()
-    "Replace the `completion-at-point' and `complete-symbol' bindings in
-     irony-mode's buffers by irony-mode's function."
-    (define-key irony-mode-map [remap completion-at-point] 'irony-completion-at-point-async)
-    (define-key irony-mode-map [remap complete-symbol] 'irony-completion-at-point-async))
+  (add-hook 'c++-mode-hook #'lsp)
+  (add-hook 'c-mode-hook #'lsp)
+  (setq lsp-auto-guess-root t)
+  (setq lsp-prefer-flymake t)
+  (setq lsp-auto-configure t))
 
-  (add-hook 'irony-mode-hook 'my-irony-mode-hook)
-  (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
+(use-package company-lsp)
 
-(add-to-list 'load-path "~/.emacs.d/glsl-mode")
-(autoload 'glsl-mode "glsl-mode" nil t)
-(add-to-list 'auto-mode-alist '("\\.glsl\\'" . glsl-mode))
-(add-to-list 'auto-mode-alist '("\\.vert\\'" . glsl-mode))
-(add-to-list 'auto-mode-alist '("\\.frag\\'" . glsl-mode))
-(add-to-list 'auto-mode-alist '("\\.geom\\'" . glsl-mode))
-(if (boundp 'irony-supported-major-modes)
-    (push 'glsl-mode irony-supported-major-modes))
-
-(use-package company-irony-c-headers
-  :config
-  ;; Load with `irony-mode` as a grouped backend
-  (eval-after-load 'company
-    '(add-to-list
-      'company-backends '(company-irony-c-headers company-irony))))
-
-(add-hook 'c-mode-common-hook
-          (lambda ()
-            (when (derived-mode-p 'c-mode 'c++-mode 'java-mode 'asm-mode)
-              (ggtags-mode 1))))
-
-(add-hook 'c-mode-common-hook 'diff-hl-mode)
-
-(use-package flycheck-irony
-  :config
-  (eval-after-load 'flycheck
-    '(add-hook 'flycheck-mode-hook #'flycheck-irony-setup)))
-
-(autoload 'octave-mode "octave-mod" nil t)
-(setq auto-mode-alist
-      (cons '("\\.m$" . octave-mode) auto-mode-alist))
 ;;; init.el ends here
 
