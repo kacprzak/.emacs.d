@@ -232,11 +232,17 @@
   :init
   (add-hook 'c++-mode-hook #'lsp)
   (add-hook 'c-mode-hook #'lsp)
-  (setq lsp-auto-guess-root t)
-  (setq lsp-prefer-flymake t)
-  (setq lsp-auto-configure t))
+  (add-hook 'python-mode-hook #'lsp)
+  (add-hook 'c++-mode-hook
+            (lambda ()
+              (setq flymake-diagnostic-functions (list 'lsp--flymake-backend))))
+  (add-hook 'c-mode-hook
+            (lambda ()
+              (setq flymake-diagnostic-functions (list 'lsp--flymake-backend)))))
 
-(use-package company-lsp)
+(use-package company-lsp
+  :config
+  (delete 'company-clang company-backends))
 
 ;;; init.el ends here
 
