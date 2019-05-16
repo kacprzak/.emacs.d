@@ -125,6 +125,7 @@
   (key-chord-mode t)
   (key-chord-define-global "jk" 'ace-jump-char-mode)
   (key-chord-define-global "jj" 'ace-jump-word-mode)
+  (key-chord-define-global "jl" 'ace-jump-line-mode)
   (key-chord-define-global "uu" 'undo-tree-visualize)
   (key-chord-define-global "JJ" 'crux-switch-to-previous-buffer))
 
@@ -190,14 +191,10 @@
   :bind (("<f5>" . projectile-run-project)
          ("<f6>" . projectile-compile-project)
          ("<f7>" . projectile-test-project))
-  :init
-  ;;(setq projectile-keymap-prefix (kbd "s-p"))
+  :bind-keymap
+  ("C-c p" . projectile-command-map)
   :config
   (projectile-mode +1))
-
-(use-package cmake-ide
-  :config
-  (cmake-ide-setup))
 
 (use-package guru-mode
   :diminish guru-mode
@@ -238,7 +235,12 @@
               (setq flymake-diagnostic-functions (list 'lsp--flymake-backend))))
   (add-hook 'c-mode-hook
             (lambda ()
-              (setq flymake-diagnostic-functions (list 'lsp--flymake-backend)))))
+              (setq flymake-diagnostic-functions (list 'lsp--flymake-backend))))
+  :config
+  (setq lsp-auto-guess-root t)
+  :bind
+  ;; temporary workaround
+  (("M-?" . lsp-find-references)))
 
 (use-package company-lsp
   :config
