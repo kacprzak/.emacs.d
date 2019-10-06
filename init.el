@@ -1,6 +1,8 @@
 ;;; package --- Summary Marcin Kacprzak emacs configuration
 ;;; Commentary:
 ;;; Code:
+(setq package-check-signature nil)
+
 (require 'package)
 
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
@@ -46,6 +48,7 @@
 (scroll-bar-mode -1)
 (menu-bar-mode -1)
 (tool-bar-mode -1)
+(tooltip-mode -1)
 (global-hl-line-mode 1)
 ;; Disables bell sound
 (setq visible-bell 1)
@@ -236,6 +239,9 @@
   (add-hook 'c-mode-hook
             (lambda ()
               (setq flymake-diagnostic-functions (list 'lsp--flymake-backend))))
+  (add-hook 'python-mode-hook
+            (lambda ()
+              (setq flymake-diagnostic-functions (list 'lsp--flymake-backend))))
   :config
   (setq lsp-auto-guess-root t)
   :bind
@@ -245,6 +251,15 @@
 (use-package company-lsp
   :config
   (delete 'company-clang company-backends))
+
+(use-package dap-mode
+  :init
+  (require 'dap-python)
+  :config
+  (dap-mode 1)
+  (dap-ui-mode 1)
+  ;; enables mouse hover support
+  (dap-tooltip-mode))
 
 ;;; init.el ends here
 
