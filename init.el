@@ -1,6 +1,17 @@
 ;;; package --- Summary Marcin Kacprzak emacs configuration
 ;;; Commentary:
 ;;; Code:
+
+;; Turn off mouse interface early in startup to avoid momentary display
+(menu-bar-mode -1)
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
+(tooltip-mode -1)
+
+;; Use larger font
+(if (eq system-type 'windows-nt)
+    (setq default-frame-alist '((font . "Consolas-11"))))
+
 (setq package-check-signature nil)
 
 (require 'package)
@@ -30,25 +41,15 @@
   :config
   (load-theme 'doom-molokai t))
 
-;; Nice scrolling
-(setq scroll-margin 0
-      scroll-conservatively 100000
-      scroll-preserve-screen-position 1)
-
+;; Remember point position
+(save-place-mode 1)
 ;; Enable y/n answers
 (fset 'yes-or-no-p 'y-or-n-p)
-
 ;; Newline at end of file
 (setq require-final-newline t)
-
 ;; Delete the selection with a keypress
 (delete-selection-mode t)
-
-;; More space on my tiny monitor
-(scroll-bar-mode -1)
-(menu-bar-mode -1)
-(tool-bar-mode -1)
-(tooltip-mode -1)
+;; Highlight current line
 (global-hl-line-mode 1)
 ;; Disables bell sound
 (setq visible-bell 1)
@@ -57,9 +58,11 @@
 ;; Matching parenthesis
 (show-paren-mode t)
 ;; Modeline
-(setq column-number-mode t)
 (size-indication-mode t)
-
+;; Undo/redo window configuration with C-c <left>/<right>
+(winner-mode 1)
+;; 80 chars is a good width.
+(set-default 'fill-column 80)
 ;; Store all backup and autosave files in the tmp dir
 (setq backup-directory-alist
       `((".*" . ,temporary-file-directory)))
@@ -81,8 +84,7 @@
 
 (recentf-mode 1)
 (setq recentf-max-menu-items 25)
-(setq recentf-max-saved-items 25)
-(global-set-key (kbd "C-x C-r") 'recentf-open-files)
+(setq recentf-max-saved-items 100)
 
 (diminish 'abbrev-mode)
 (diminish 'auto-revert-mode)
@@ -260,6 +262,21 @@
   (dap-ui-mode 1)
   ;; enables mouse hover support
   (dap-tooltip-mode))
+
+;; volatile highlights - temporarily highlight changes from pasting etc
+(use-package volatile-highlights
+  :config
+  (volatile-highlights-mode t))
+
+(use-package eyebrowse
+  :diminish eyebrowse-mode
+  :config (progn
+            (define-key eyebrowse-mode-map (kbd "M-1") 'eyebrowse-switch-to-window-config-1)
+            (define-key eyebrowse-mode-map (kbd "M-2") 'eyebrowse-switch-to-window-config-2)
+            (define-key eyebrowse-mode-map (kbd "M-3") 'eyebrowse-switch-to-window-config-3)
+            (define-key eyebrowse-mode-map (kbd "M-4") 'eyebrowse-switch-to-window-config-4)
+            (eyebrowse-mode t)
+            (setq eyebrowse-new-workspace t)))
 
 ;;; init.el ends here
 
