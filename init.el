@@ -5,7 +5,6 @@
 ;; Turn off mouse interface early in startup to avoid momentary display
 (menu-bar-mode -1)
 (tool-bar-mode -1)
-(scroll-bar-mode -1)
 (tooltip-mode -1)
 
 ;; Use larger font
@@ -179,7 +178,7 @@
 (use-package yasnippet
   :diminish yas-minor-mode
   :config
-  (yas-global-mode 1))
+  (yas-global-mode))
 
 (use-package clang-format
   :bind (:map c-mode-map ("C-M-\\" . clang-format-buffer)
@@ -199,21 +198,17 @@
   :bind-keymap
   ("C-c p" . projectile-command-map)
   :config
-  (projectile-mode +1))
+  (projectile-mode))
 
 (use-package guru-mode
   :diminish guru-mode
   :config
-  (guru-global-mode +1))
+  (guru-global-mode))
 
 (use-package nyan-mode
   :config
-  (nyan-mode +1))
-
-(require 'gdb-mi)
-(setq
- gdb-many-windows t
- gdb-show-main t)
+  (nyan-mode)
+  (scroll-bar-mode -1))
 
 (use-package company
   :diminish company-mode
@@ -232,27 +227,26 @@
 (use-package lsp-mode
   :commands lsp
   :init
-  (add-hook 'c++-mode-hook #'lsp)
-  (add-hook 'c-mode-hook #'lsp)
-  (add-hook 'python-mode-hook #'lsp)
-  (add-hook 'c++-mode-hook
-            (lambda ()
-              (setq flymake-diagnostic-functions (list 'lsp--flymake-backend))))
-  (add-hook 'c-mode-hook
-            (lambda ()
-              (setq flymake-diagnostic-functions (list 'lsp--flymake-backend))))
-  (add-hook 'python-mode-hook
-            (lambda ()
-              (setq flymake-diagnostic-functions (list 'lsp--flymake-backend))))
-  :config
   (setq lsp-auto-guess-root t)
+  :hook
+  (c++-mode . lsp)
+  (c-mode . lsp)
+  (python-mode . lsp)
+  (c++-mode . (lambda ()
+		(setq flymake-diagnostic-functions (list 'lsp--flymake-backend))))
+  (c-mode . (lambda ()
+              (setq flymake-diagnostic-functions (list 'lsp--flymake-backend))))
+  (python-mode . (lambda ()
+		   (setq flymake-diagnostic-functions (list 'lsp--flymake-backend))))
   :bind
   ;; temporary workaround
   (("M-?" . lsp-find-references)))
 
 (use-package company-lsp
+  :commands company-lsp
   :config
-  (delete 'company-clang company-backends))
+  (delete 'company-clang company-backends)
+  (push 'company-lsp company-backends))
 
 (use-package dap-mode
   :init
@@ -265,6 +259,7 @@
 
 ;; volatile highlights - temporarily highlight changes from pasting etc
 (use-package volatile-highlights
+  :diminish volatile-highlights-mode
   :config
   (volatile-highlights-mode t))
 
