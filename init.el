@@ -15,6 +15,10 @@
 
 (require 'package)
 
+;; Fox for "Bad Request" error when loading from elpa
+(if (version< emacs-version "26.3")
+    (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3"))
+
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 
@@ -62,6 +66,7 @@
 (winner-mode 1)
 ;; 80 chars is a good width.
 (set-default 'fill-column 80)
+(global-unset-key (kbd "C-x f"))
 ;; Store all backup and autosave files in the tmp dir
 (setq backup-directory-alist
       `((".*" . ,temporary-file-directory)))
@@ -248,14 +253,22 @@
   (delete 'company-clang company-backends)
   (push 'company-lsp company-backends))
 
+(use-package posframe)
+
 (use-package dap-mode
   :init
+  (setq dap-print-io t)
+  (require 'dap-lldb)
   (require 'dap-python)
   :config
   (dap-mode 1)
   (dap-ui-mode 1)
   ;; enables mouse hover support
-  (dap-tooltip-mode))
+  (dap-tooltip-mode)
+  :bind
+  (("C-<f10>" . dap-next)
+   ("C-<f11>" . dap-step-in)
+   ("C-S-<f11>" . dap-step-out)))
 
 ;; volatile highlights - temporarily highlight changes from pasting etc
 (use-package volatile-highlights
