@@ -257,8 +257,8 @@
 
 (use-package dap-mode
   :init
-  (setq dap-print-io t)
-  (require 'dap-lldb)
+  ;;(setq dap-print-io t)
+  (require 'dap-gdb-lldb)
   (require 'dap-python)
   :config
   (dap-mode 1)
