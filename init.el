@@ -16,8 +16,8 @@
 (require 'package)
 
 ;; Fox for "Bad Request" error when loading from elpa
-(if (version< emacs-version "26.3")
-    (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3"))
+;; (if (version< emacs-version "26.3")
+;;     (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3"))
 
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
@@ -61,7 +61,7 @@
 ;; Matching parenthesis
 (show-paren-mode t)
 ;; Modeline
-(size-indication-mode t)
+(size-indication-mode -1)
 ;; Undo/redo window configuration with C-c <left>/<right>
 (winner-mode 1)
 ;; 80 chars is a good width.
@@ -179,11 +179,11 @@
   :bind
   ("C-s" . 'swiper))
 
-(add-to-list 'load-path "~/.emacs.d/plugins/yasnippet")
-(use-package yasnippet
-  :diminish yas-minor-mode
-  :config
-  (yas-global-mode))
+;; (add-to-list 'load-path "~/.emacs.d/plugins/yasnippet")
+;; (use-package yasnippet
+;;   :diminish yas-minor-mode
+;;   :config
+;;   (yas-global-mode))
 
 (use-package clang-format
   :bind (:map c-mode-map ("C-M-\\" . clang-format-buffer)
@@ -220,6 +220,7 @@
   :init
   (global-set-key "\t" 'company-indent-or-complete-common)
   :config
+  (delete 'company-clang company-backends)
   (global-company-mode))
 
 (use-package glsl-mode)
@@ -233,27 +234,29 @@
   :commands lsp
   :init
   (setq lsp-auto-guess-root t)
+  (setq lsp-enable-snippet nil)
   :hook
   (c++-mode . lsp)
   (c-mode . lsp)
   (python-mode . lsp)
-  (c++-mode . (lambda ()
-		(setq flymake-diagnostic-functions (list 'lsp--flymake-backend))))
-  (c-mode . (lambda ()
-              (setq flymake-diagnostic-functions (list 'lsp--flymake-backend))))
-  (python-mode . (lambda ()
-		   (setq flymake-diagnostic-functions (list 'lsp--flymake-backend))))
   :bind
   ;; temporary workaround
   (("M-?" . lsp-find-references)))
 
+(use-package flycheck
+  :ensure t
+  :init (global-flycheck-mode))
+
+(use-package lsp-ui
+  :commands lsp-ui-mode)
+
 (use-package company-lsp
   :commands company-lsp
   :config
-  (delete 'company-clang company-backends)
   (push 'company-lsp company-backends))
 
-(use-package posframe)
+(if (> emacs-major-version 26)
+    (use-package posframe))
 
 (use-package dap-mode
   :init
@@ -266,7 +269,8 @@
   ;; enables mouse hover support
   (dap-tooltip-mode)
   :bind
-  (("C-<f10>" . dap-next)
+  (("C-<f5>" . dap-continue)
+   ("C-<f10>" . dap-next)
    ("C-<f11>" . dap-step-in)
    ("C-S-<f11>" . dap-step-out)))
 
@@ -285,6 +289,9 @@
             (define-key eyebrowse-mode-map (kbd "M-4") 'eyebrowse-switch-to-window-config-4)
             (eyebrowse-mode t)
             (setq eyebrowse-new-workspace t)))
+
+(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+(load custom-file)
 
 ;;; init.el ends here
 
