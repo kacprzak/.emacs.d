@@ -235,13 +235,17 @@
   :init
   (setq lsp-auto-guess-root t)
   (setq lsp-enable-snippet nil)
+  (setq lsp-prefer-flymake nil)
+  ;;(setq lsp-auto-configure t)
   :hook
   (c++-mode . lsp)
   (c-mode . lsp)
   (python-mode . lsp)
   :bind
   ;; temporary workaround
-  (("M-?" . lsp-find-references)))
+  (("M-?" . lsp-find-references))
+  :config
+  (setq lsp-clients-clangd-args '("-j=4" "-background-index" "-log=error")))
 
 (use-package flycheck
   :ensure t
