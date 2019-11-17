@@ -6,6 +6,7 @@
 (menu-bar-mode -1)
 (tool-bar-mode -1)
 (tooltip-mode -1)
+(scroll-bar-mode -1)
 
 ;; Use larger font
 (if (eq system-type 'windows-nt)
@@ -40,9 +41,24 @@
 ;; use-package always auto install packages
 (setq use-package-always-ensure t)
 
+(use-package multiple-cursors
+  :bind
+  (("C->" . mc/mark-next-like-this)
+   ("C-<" . mc/mark-previous-like-this)
+   ("C-c C-<" . mc/mark-all-like-this)))
+
 (use-package doom-themes
   :config
   (load-theme 'doom-molokai t))
+
+(use-package doom-modeline
+  :ensure t
+  :hook (after-init . doom-modeline-mode))
+
+(use-package dashboard
+  :ensure t
+  :config
+  (dashboard-setup-startup-hook))
 
 ;; Remember point position
 (save-place-mode 1)
@@ -179,12 +195,6 @@
   :bind
   ("C-s" . 'swiper))
 
-;; (add-to-list 'load-path "~/.emacs.d/plugins/yasnippet")
-;; (use-package yasnippet
-;;   :diminish yas-minor-mode
-;;   :config
-;;   (yas-global-mode))
-
 (use-package clang-format
   :bind (:map c-mode-map ("C-M-\\" . clang-format-buffer)
               :map c++-mode-map ("C-M-\\" . clang-format-buffer)))
@@ -209,11 +219,6 @@
   :diminish guru-mode
   :config
   (guru-global-mode))
-
-(use-package nyan-mode
-  :config
-  (nyan-mode)
-  (scroll-bar-mode -1))
 
 (use-package company
   :diminish company-mode
@@ -283,16 +288,6 @@
   :diminish volatile-highlights-mode
   :config
   (volatile-highlights-mode t))
-
-(use-package eyebrowse
-  :diminish eyebrowse-mode
-  :config (progn
-            (define-key eyebrowse-mode-map (kbd "M-1") 'eyebrowse-switch-to-window-config-1)
-            (define-key eyebrowse-mode-map (kbd "M-2") 'eyebrowse-switch-to-window-config-2)
-            (define-key eyebrowse-mode-map (kbd "M-3") 'eyebrowse-switch-to-window-config-3)
-            (define-key eyebrowse-mode-map (kbd "M-4") 'eyebrowse-switch-to-window-config-4)
-            (eyebrowse-mode t)
-            (setq eyebrowse-new-workspace t)))
 
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (if (file-exists-p custom-file)
