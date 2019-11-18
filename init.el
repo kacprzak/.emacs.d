@@ -165,6 +165,8 @@
   :bind
   (("<f8>" . neotree-toggle))
   :config
+  (setq neo-window-width 38)
+  (setq neo-smart-open t)
   (setq neo-theme (if (display-graphic-p) 'icons 'arrow)))
 
 (use-package windmove
@@ -227,6 +229,8 @@
   :config
   (delete 'company-clang company-backends)
   (global-company-mode))
+
+(use-package cmake-mode)
 
 (use-package glsl-mode)
 
