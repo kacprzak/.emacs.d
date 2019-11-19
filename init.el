@@ -12,22 +12,17 @@
 (if (eq system-type 'windows-nt)
     (setq default-frame-alist '((font . "Consolas-11"))))
 
-(setq package-check-signature nil)
-
 (require 'package)
 
-;; Fox for "Bad Request" error when loading from elpa
-;; (if (version< emacs-version "26.3")
-;;     (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3"))
-
-(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+;;(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 
 (package-initialize)
 
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
-  (package-install 'use-package))
+  (package-install 'use-package)
+  (package-install 'diminish))
 
 (eval-when-compile
   (require 'use-package))
@@ -52,11 +47,10 @@
   (load-theme 'doom-molokai t))
 
 (use-package doom-modeline
-  :ensure t
-  :hook (after-init . doom-modeline-mode))
+  :hook
+  (after-init . doom-modeline-mode))
 
 (use-package dashboard
-  :ensure t
   :config
   (dashboard-setup-startup-hook))
 
@@ -257,7 +251,6 @@
   (setq lsp-clients-clangd-args '("-j=4" "-background-index" "-log=error")))
 
 (use-package flycheck
-  :ensure t
   :init (global-flycheck-mode))
 
 (use-package lsp-ui
