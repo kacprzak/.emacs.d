@@ -34,12 +34,16 @@
       use-package-always-ensure t
       require-final-newline t
       visible-bell 1
+      dired-listing-switches "-alhFG"
       backup-directory-alist `((".*" . ,temporary-file-directory))
       auto-save-file-name-transforms `((".*" ,temporary-file-directory t)))
 
 (setq-default indicate-empty-lines t
-	      fill-column 80
-	      indent-tabs-mode nil)
+              fill-column 80
+              tab-width 4
+              indent-tabs-mode nil)
+
+(setq indent-line-function 'insert-tab) ;; https://stackoverflow.com/a/1819405
 
 (global-unset-key (kbd "C-x f")) ;; fill-column
 
@@ -48,6 +52,7 @@
 (require 'recentf)
 (setq recentf-max-menu-items 25
       recentf-max-saved-items 100)
+(add-to-list 'recentf-exclude (format "%s/\\.emacs\\.d/.*" (getenv "HOME")))
 (recentf-mode 1)
 
 (save-place-mode 1)
@@ -71,10 +76,6 @@
 
 (diminish 'abbrev-mode)
 (diminish 'auto-revert-mode)
-
-(use-package beacon
-  :config
-  (beacon-mode 1))
 
 (use-package doom-themes
   :config
@@ -115,7 +116,7 @@
          ([(shift return)] . crux-smart-open-line)
          ([(control shift return)] . crux-smart-open-line-above)
          ([remap kill-whole-line] . crux-kill-whole-line)
-	 ("C-c s" . crux-ispell-word-then-abbrev)))
+         ("C-c s" . crux-ispell-word-then-abbrev)))
 
 (use-package undo-tree
   :diminish undo-tree-mode
@@ -165,23 +166,28 @@
 
 (use-package counsel
   :bind (( "M-x" . 'counsel-M-x)
-	 ( "C-x C-f" . 'counsel-find-file)
-	 ( "<f1> f" . 'counsel-describe-function)
-	 ( "<f1> v" . 'counsel-describe-variable)
-	 ( "<f1> l" . 'counsel-find-library)
-	 ( "<f2> i" . 'counsel-info-lookup-symbol)
-	 ( "<f2> u" . 'counsel-unicode-char)))
+         ( "C-x C-f" . 'counsel-find-file)
+         ( "<f1> f" . 'counsel-describe-function)
+         ( "<f1> v" . 'counsel-describe-variable)
+         ( "<f1> l" . 'counsel-find-library)
+         ( "<f2> i" . 'counsel-info-lookup-symbol)
+         ( "<f2> u" . 'counsel-unicode-char)))
 
 (use-package swiper
   :bind
   ("C-s" . 'swiper))
 
+(use-package dired-single
+  :config
+  (define-key dired-mode-map [return] 'dired-single-buffer)
+  (define-key dired-mode-map [mouse-1] 'dired-single-buffer-mouse))
+
 (use-package clang-format
   :bind
   (:map c-mode-map
-	("C-M-\\" . clang-format-buffer)
-	:map c++-mode-map
-	("C-M-\\" . clang-format-buffer)))
+        ("C-M-\\" . clang-format-buffer)
+        :map c++-mode-map
+        ("C-M-\\" . clang-format-buffer)))
 
 (use-package move-text
   :bind (([M-up] . move-text-up)
@@ -189,6 +195,8 @@
 
 (use-package magit
   :bind ("C-x g" . magit-status))
+
+(use-package git-timemachine)
 
 (use-package projectile
   :bind (("<f5>" . projectile-run-project)
