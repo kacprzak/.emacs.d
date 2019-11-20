@@ -1,22 +1,21 @@
-;;; package --- Summary Marcin Kacprzak emacs configuration
+;;; package --- Summary Marcin Kacprzak's emacs configuration
 ;;; Commentary:
 ;;; Code:
 
-;; Turn off mouse interface early in startup to avoid momentary display
+(when (fboundp 'tool-bar-mode)
+  (tool-bar-mode -1))
 (menu-bar-mode -1)
-(tool-bar-mode -1)
 (tooltip-mode -1)
 (scroll-bar-mode -1)
 
-;; Use larger font
 (if (eq system-type 'windows-nt)
     (setq default-frame-alist '((font . "Consolas-11"))))
 
+(setq load-prefer-newer t)
+
 (require 'package)
 
-;;(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
-
 (package-initialize)
 
 (unless (package-installed-p 'use-package)
@@ -28,19 +27,54 @@
   (require 'use-package))
 (require 'diminish)
 (require 'bind-key)
-
 (require 'cc-mode)
 (require 'compile)
-(setq compilation-scroll-output t)
 
-;; use-package always auto install packages
-(setq use-package-always-ensure t)
+(setq compilation-scroll-output t
+      use-package-always-ensure t
+      require-final-newline t
+      visible-bell 1
+      backup-directory-alist `((".*" . ,temporary-file-directory))
+      auto-save-file-name-transforms `((".*" ,temporary-file-directory t)))
 
-(use-package multiple-cursors
-  :bind
-  (("C->" . mc/mark-next-like-this)
-   ("C-<" . mc/mark-previous-like-this)
-   ("C-c C-<" . mc/mark-all-like-this)))
+(setq-default indicate-empty-lines t
+	      fill-column 80
+	      indent-tabs-mode nil)
+
+(global-unset-key (kbd "C-x f")) ;; fill-column
+
+(fset 'yes-or-no-p 'y-or-n-p)
+
+(require 'recentf)
+(setq recentf-max-menu-items 25
+      recentf-max-saved-items 100)
+(recentf-mode 1)
+
+(save-place-mode 1)
+(column-number-mode t)
+(size-indication-mode -1)
+(global-hl-line-mode 1)
+(global-auto-revert-mode t)
+(delete-selection-mode t)
+(show-paren-mode t)
+(winner-mode 1)
+
+(prefer-coding-system 'utf-8)
+(set-default-coding-systems 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+
+;; Same as in Prelude package
+(global-set-key (kbd "<f12>") 'menu-bar-mode)
+(global-set-key (kbd "M-/") 'hippie-expand)
+(global-set-key (kbd "C-x C-o") 'ff-find-other-file)
+
+(diminish 'abbrev-mode)
+(diminish 'auto-revert-mode)
+
+(use-package beacon
+  :config
+  (beacon-mode 1))
 
 (use-package doom-themes
   :config
@@ -53,55 +87,6 @@
 (use-package dashboard
   :config
   (dashboard-setup-startup-hook))
-
-;; Remember point position
-(save-place-mode 1)
-;; Enable y/n answers
-(fset 'yes-or-no-p 'y-or-n-p)
-;; Newline at end of file
-(setq require-final-newline t)
-;; Delete the selection with a keypress
-(delete-selection-mode t)
-;; Highlight current line
-(global-hl-line-mode 1)
-;; Disables bell sound
-(setq visible-bell 1)
-;; Show empty lines
-(setq-default indicate-empty-lines t)
-;; Matching parenthesis
-(show-paren-mode t)
-;; Modeline
-(size-indication-mode -1)
-;; Undo/redo window configuration with C-c <left>/<right>
-(winner-mode 1)
-;; 80 chars is a good width.
-(set-default 'fill-column 80)
-(global-unset-key (kbd "C-x f"))
-;; Store all backup and autosave files in the tmp dir
-(setq backup-directory-alist
-      `((".*" . ,temporary-file-directory)))
-(setq auto-save-file-name-transforms
-      `((".*" ,temporary-file-directory t)))
-
-;; Revert buffers automatically when underlying files are changed externally
-(global-auto-revert-mode t)
-
-(prefer-coding-system 'utf-8)
-(set-default-coding-systems 'utf-8)
-(set-terminal-coding-system 'utf-8)
-(set-keyboard-coding-system 'utf-8)
-
-;; Same as in Prelude package
-(global-set-key (kbd "<f12>") 'menu-bar-mode)
-;;(global-set-key (kbd "M-/") 'hippie-expand)
-(global-set-key (kbd "C-x C-o") 'ff-find-other-file)
-
-(recentf-mode 1)
-(setq recentf-max-menu-items 25)
-(setq recentf-max-saved-items 100)
-
-(diminish 'abbrev-mode)
-(diminish 'auto-revert-mode)
 
 (use-package crux
   :ensure t
@@ -192,8 +177,11 @@
   ("C-s" . 'swiper))
 
 (use-package clang-format
-  :bind (:map c-mode-map ("C-M-\\" . clang-format-buffer)
-              :map c++-mode-map ("C-M-\\" . clang-format-buffer)))
+  :bind
+  (:map c-mode-map
+	("C-M-\\" . clang-format-buffer)
+	:map c++-mode-map
+	("C-M-\\" . clang-format-buffer)))
 
 (use-package move-text
   :bind (([M-up] . move-text-up)
@@ -234,6 +222,7 @@
     (add-to-list 'company-backends 'company-glsl)))
 
 (use-package lsp-mode
+  :defines lsp-clients-clangd-args
   :commands lsp
   :init
   (setq lsp-auto-guess-root t)
@@ -285,6 +274,12 @@
   :diminish volatile-highlights-mode
   :config
   (volatile-highlights-mode t))
+
+(use-package multiple-cursors
+  :bind
+  (("C->" . mc/mark-next-like-this)
+   ("C-<" . mc/mark-previous-like-this)
+   ("C-c C-<" . mc/mark-all-like-this)))
 
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (if (file-exists-p custom-file)
