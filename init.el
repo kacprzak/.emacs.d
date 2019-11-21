@@ -32,6 +32,9 @@
 
 (setq compilation-scroll-output t
       use-package-always-ensure t
+      shift-select-mode nil
+      delete-by-moving-to-trash t
+      enable-recursive-minibuffers t
       require-final-newline t
       visible-bell 1
       dired-listing-switches "-alhFG"
@@ -39,6 +42,7 @@
       auto-save-file-name-transforms `((".*" ,temporary-file-directory t)))
 
 (setq-default indicate-empty-lines t
+              truncate-lines t
               fill-column 80
               tab-width 4
               indent-tabs-mode nil)
@@ -64,10 +68,16 @@
 (show-paren-mode t)
 (winner-mode 1)
 
+;; Save minibuffer history
+(savehist-mode 1)
+(setq history-length 1000)
+
 (prefer-coding-system 'utf-8)
 (set-default-coding-systems 'utf-8)
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
+
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 ;; Same as in Prelude package
 (global-set-key (kbd "<f12>") 'menu-bar-mode)
@@ -90,7 +100,6 @@
   (dashboard-setup-startup-hook))
 
 (use-package crux
-  :ensure t
   :bind (("C-c o" . crux-open-with)
          ("M-o" . crux-smart-open-line)
          ("C-c n" . crux-cleanup-buffer-or-region)
@@ -141,6 +150,10 @@
 
 (use-package all-the-icons)
 
+(use-package all-the-icons-dired
+  :hook
+  (dired-mode . all-the-icons-dired-mode))
+
 (use-package neotree
   :bind
   (("<f8>" . neotree-toggle))
@@ -162,6 +175,9 @@
   :diminish ivy-mode
   :bind (("C-c C-r" . 'ivy-resume))
   :config
+  (setq ivy-display-style 'fancy
+        ivy-use-virtual-buffers t
+        ivy-use-selectable-prompt t)
   (ivy-mode t))
 
 (use-package counsel
@@ -294,4 +310,3 @@
     (load custom-file))
 
 ;;; init.el ends here
-
