@@ -1,5 +1,8 @@
-;;; package --- Summary Marcin Kacprzak's emacs configuration
+;;; package --- Summary Marcin Kacprzak's Emacs configuration
 ;;; Commentary:
+;; For C++ install clang-format, clangd, lldb.  Clangd expects libc++ headers
+;; in different place to where they are in Ubuntu:
+;; https://stackoverflow.com/questions/55289053
 ;;; Code:
 
 (when (fboundp 'tool-bar-mode)
@@ -68,7 +71,7 @@
 (show-paren-mode t)
 (winner-mode 1)
 
-;; Save minibuffer history
+;; Save mini-buffer history
 (savehist-mode 1)
 (setq history-length 1000)
 
@@ -278,20 +281,22 @@
     (use-package posframe))
 
 (use-package dap-mode
+  :after lsp-mode
+  :defines dap-lldb-debug-program
   :init
   ;;(setq dap-print-io t)
-  (require 'dap-gdb-lldb)
+  (require 'dap-lldb)
   (require 'dap-python)
   :config
+  (setq dap-lldb-debug-program '("/usr/bin/lldb-vscode-9"))
   (dap-mode 1)
   (dap-ui-mode 1)
   ;; enables mouse hover support
   (dap-tooltip-mode)
+  (add-hook 'dap-stopped-hook
+          (lambda (arg) (call-interactively #'dap-hydra)))
   :bind
-  (("C-<f5>" . dap-continue)
-   ("C-<f10>" . dap-next)
-   ("C-<f11>" . dap-step-in)
-   ("C-S-<f11>" . dap-step-out)))
+  (("C-<f5>" . dap-debug-last)))
 
 ;; volatile highlights - temporarily highlight changes from pasting etc
 (use-package volatile-highlights
@@ -310,3 +315,7 @@
     (load custom-file))
 
 ;;; init.el ends here
+;; Local Variables:
+;; ispell-check-comments: exclusive
+;; ispell-local-dictionary: "american"
+;; End:
