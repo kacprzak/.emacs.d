@@ -19,7 +19,8 @@
 (require 'package)
 
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
-(package-initialize)
+(when (< emacs-major-version 27)
+  (package-initialize))
 
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
@@ -40,6 +41,7 @@
       enable-recursive-minibuffers t
       require-final-newline t
       visible-bell 1
+      x-stretch-cursor t
       dired-listing-switches "-alhFG"
       backup-directory-alist `((".*" . ,temporary-file-directory))
       auto-save-file-name-transforms `((".*" ,temporary-file-directory t)))
@@ -86,6 +88,8 @@
 (global-set-key (kbd "<f12>") 'menu-bar-mode)
 (global-set-key (kbd "M-/") 'hippie-expand)
 (global-set-key (kbd "C-x C-o") 'ff-find-other-file)
+(global-set-key (kbd "C-x k") (lambda ()
+                                (interactive) (kill-buffer (current-buffer))))
 
 (diminish 'abbrev-mode)
 (diminish 'auto-revert-mode)
@@ -264,6 +268,7 @@
   ;; temporary workaround
   (("M-?" . lsp-find-references))
   :config
+  (setq lsp-symbol-highlighting-skip-current t)
   (setq lsp-clients-clangd-args '("-j=4" "-background-index" "-log=error")))
 
 (use-package flycheck
