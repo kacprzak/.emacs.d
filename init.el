@@ -47,10 +47,12 @@
       auto-save-file-name-transforms `((".*" ,temporary-file-directory t)))
 
 (setq-default indicate-empty-lines t
-              truncate-lines t
               fill-column 80
               tab-width 4
               indent-tabs-mode nil)
+
+(add-hook 'prog-mode-hook '(lambda ()
+                             (setq truncate-lines t)))
 
 (setq indent-line-function 'insert-tab) ;; https://stackoverflow.com/a/1819405
 
@@ -100,7 +102,8 @@
 (diminish 'auto-revert-mode)
 
 (require 'org)
-(setq org-agenda-files '("~/TODO.org"))
+(setq org-agenda-files '("~/TODO.org")
+      org-adapt-indentation nil)
 
 (use-package doom-themes
   :config
@@ -156,7 +159,7 @@
   (key-chord-define-global "jj" 'avy-goto-word-1)
   (key-chord-define-global "jk" 'avy-goto-char)
   (key-chord-define-global "jl" 'avy-goto-line)
-  (key-chord-define-global "j;" 'ace-window)
+  (key-chord-define-global "jw" 'ace-window)
   (key-chord-define-global "uu" 'undo-tree-visualize)
   (key-chord-define-global "JJ" 'crux-switch-to-previous-buffer))
 
