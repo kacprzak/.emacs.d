@@ -88,11 +88,19 @@
 (global-set-key (kbd "<f12>") 'menu-bar-mode)
 (global-set-key (kbd "M-/") 'hippie-expand)
 (global-set-key (kbd "C-x C-o") 'ff-find-other-file)
-(global-set-key (kbd "C-x k") (lambda ()
-                                (interactive) (kill-buffer (current-buffer))))
+
+(defun my/kill-current-buffer ()
+  "Kill current buffer."
+  (interactive)
+  (kill-buffer (current-buffer)))
+
+(global-set-key (kbd "C-x k") 'my/kill-current-buffer)
 
 (diminish 'abbrev-mode)
 (diminish 'auto-revert-mode)
+
+(require 'org)
+(setq org-agenda-files '("~/TODO.org"))
 
 (use-package doom-themes
   :config
@@ -108,7 +116,7 @@
 
 (use-package crux
   :bind (("C-c o" . crux-open-with)
-         ("M-o" . crux-smart-open-line)
+         ;; ("M-o" . crux-smart-open-line)
          ("C-c n" . crux-cleanup-buffer-or-region)
          ("C-c f" . crux-recentf-find-file)
          ("C-M-z" . crux-indent-defun)
@@ -127,7 +135,7 @@
          ("C-^" . crux-top-join-line)
          ("s-k" . crux-kill-whole-line)
          ("C-<backspace>" . crux-kill-line-backwards)
-         ("s-o" . crux-smart-open-line-above)
+         ;; ("s-o" . crux-smart-open-line-above)
          ([remap move-beginning-of-line] . crux-move-beginning-of-line)
          ([(shift return)] . crux-smart-open-line)
          ([(control shift return)] . crux-smart-open-line-above)
@@ -137,16 +145,18 @@
 (use-package undo-tree
   :diminish undo-tree-mode
   :config
+  (setq undo-tree-visualizer-diff t)
   (global-undo-tree-mode 1))
 
-(use-package ace-jump-mode)
+(use-package avy)
 
 (use-package key-chord
   :config
   (key-chord-mode t)
-  (key-chord-define-global "jk" 'ace-jump-char-mode)
-  (key-chord-define-global "jj" 'ace-jump-word-mode)
-  (key-chord-define-global "jl" 'ace-jump-line-mode)
+  (key-chord-define-global "jj" 'avy-goto-word-1)
+  (key-chord-define-global "jk" 'avy-goto-char)
+  (key-chord-define-global "jl" 'avy-goto-line)
+  (key-chord-define-global "j;" 'ace-window)
   (key-chord-define-global "uu" 'undo-tree-visualize)
   (key-chord-define-global "JJ" 'crux-switch-to-previous-buffer))
 
@@ -169,10 +179,10 @@
   (setq neo-smart-open t)
   (setq neo-theme (if (display-graphic-p) 'icons 'arrow)))
 
-(use-package windmove
-  :config
-  ;; use shift + arrow keys to switch between visible buffers
-  (windmove-default-keybindings))
+;; (use-package windmove
+;;   :config
+;;   ;; use shift + arrow keys to switch between visible buffers
+;;   (windmove-default-keybindings))
 
 (use-package expand-region
   :bind
@@ -224,9 +234,11 @@
 (use-package projectile
   :bind (("<f5>" . projectile-run-project)
          ("<f6>" . projectile-compile-project)
-         ("<f7>" . projectile-test-project))
+         ("<f7>" . projectile-test-project)
+         ("M-o". projectile-find-other-file))
   :bind-keymap
   ("C-c p" . projectile-command-map)
+  ("s-p" . projectile-command-map)
   :config
   (projectile-mode))
 
