@@ -107,7 +107,13 @@
 
 (use-package doom-themes
   :config
-  (load-theme 'doom-molokai t))
+  (load-theme 'doom-molokai t)
+  ;; Enable flashing mode-line on errors
+  (doom-themes-visual-bell-config)
+  ;; Corrects (and improves) org-mode's native fontification.
+  (doom-themes-org-config)
+  ;; Enable custom treemacs theme (all-the-icons must be installed!)
+  (doom-themes-treemacs-config))
 
 (use-package doom-modeline
   :hook
@@ -174,13 +180,31 @@
   :hook
   (dired-mode . all-the-icons-dired-mode))
 
-(use-package neotree
+;; (use-package neotree
+;;   :bind
+;;   (("<f8>" . neotree-toggle))
+;;   :config
+;;   (setq neo-window-width 38)
+;;   (setq neo-smart-open t)
+;;   (setq neo-theme (if (display-graphic-p) 'icons 'arrow)))
+
+(use-package treemacs
   :bind
-  (("<f8>" . neotree-toggle))
-  :config
-  (setq neo-window-width 38)
-  (setq neo-smart-open t)
-  (setq neo-theme (if (display-graphic-p) 'icons 'arrow)))
+  (:map global-map
+        ("<f8>" . treemacs-select-window)
+        ("C-x t 1"   . treemacs-delete-other-windows)
+        ("C-x t t"   . treemacs)
+        ("C-x t B"   . treemacs-bookmark)
+        ("C-x t C-t" . treemacs-find-file)
+        ("C-x t M-t" . treemacs-find-tag)))
+
+(use-package treemacs-projectile
+  :after treemacs projectile
+  :ensure t)
+
+(use-package treemacs-magit
+  :after treemacs magit
+  :ensure t)
 
 ;; (use-package windmove
 ;;   :config
