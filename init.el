@@ -49,7 +49,8 @@
 (setq-default indicate-empty-lines t
               fill-column 80
               tab-width 4
-              indent-tabs-mode nil)
+              indent-tabs-mode nil
+              display-time-24hr-format t)
 
 (add-hook 'prog-mode-hook '(lambda ()
                              (setq truncate-lines t)))
@@ -196,7 +197,9 @@
         ("C-x t t"   . treemacs)
         ("C-x t B"   . treemacs-bookmark)
         ("C-x t C-t" . treemacs-find-file)
-        ("C-x t M-t" . treemacs-find-tag)))
+        ("C-x t M-t" . treemacs-find-tag))
+  :config
+  (setq treemacs-space-between-root-nodes nil))
 
 (use-package treemacs-projectile
   :after treemacs projectile
