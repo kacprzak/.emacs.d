@@ -120,6 +120,19 @@
   :hook
   (after-init . doom-modeline-mode))
 
+(use-package diff-hl
+  :config
+  ;; https://github.com/dgutov/diff-hl/issues/116#issuecomment-449134234
+  (let* ((height (frame-char-height))
+         (width 2)
+         (ones (1- (expt 2 width)))
+         (bits (make-vector height ones)))
+    (define-fringe-bitmap 'my-diff-hl-bitmap bits height width))
+  (setq diff-hl-fringe-bmp-function (lambda (type pos) 'my-diff-hl-bitmap))
+  ;; doom-molokai made diff-hl-change grey
+  (set-face-foreground 'diff-hl-change "dodger blue")
+  (global-diff-hl-mode))
+
 (use-package dashboard
   :config
   (dashboard-setup-startup-hook))
@@ -202,12 +215,10 @@
   (setq treemacs-space-between-root-nodes nil))
 
 (use-package treemacs-projectile
-  :after treemacs projectile
-  :ensure t)
+  :after treemacs projectile)
 
 (use-package treemacs-magit
-  :after treemacs magit
-  :ensure t)
+  :after treemacs magit)
 
 ;; (use-package windmove
 ;;   :config
@@ -257,7 +268,9 @@
          ([M-down] . move-text-down)))
 
 (use-package magit
-  :bind ("C-x g" . magit-status))
+  :bind ("C-x g" . magit-status)
+  :config
+  (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh))
 
 (use-package git-timemachine)
 
