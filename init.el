@@ -261,6 +261,8 @@
   (:map c-mode-map
         ("C-M-\\" . clang-format-buffer)
         :map c++-mode-map
+        ("C-M-\\" . clang-format-buffer)
+        :map glsl-mode-map
         ("C-M-\\" . clang-format-buffer)))
 
 (use-package move-text
@@ -374,6 +376,7 @@
 (if (file-exists-p custom-file)
     (load custom-file))
 
+(put 'upcase-region 'disabled nil)
 ;;; init.el ends here
 ;; Local Variables:
 ;; ispell-check-comments: exclusive
