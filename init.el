@@ -212,7 +212,8 @@
         ("C-x t C-t" . treemacs-find-file)
         ("C-x t M-t" . treemacs-find-tag))
   :config
-  (setq treemacs-space-between-root-nodes nil))
+  (setq treemacs-space-between-root-nodes nil)
+  (treemacs-follow-mode -1))
 
 (use-package treemacs-projectile
   :after treemacs projectile)
@@ -321,6 +322,7 @@
   (c++-mode . lsp)
   (c-mode . lsp)
   (python-mode . lsp)
+  (java-mode . lsp)
   :bind
   ;; temporary workaround
   (("M-?" . lsp-find-references))
@@ -350,11 +352,8 @@
   (require 'dap-lldb)
   (require 'dap-python)
   :config
-  (setq dap-lldb-debug-program '("/usr/bin/lldb-vscode-9"))
-  (dap-mode 1)
-  (dap-ui-mode 1)
-  ;; enables mouse hover support
-  (dap-tooltip-mode)
+  (setq dap-lldb-debug-program '("/usr/bin/lldb-vscode-10"))
+  (dap-auto-configure-mode)
   (add-hook 'dap-stopped-hook
           (lambda (arg) (call-interactively #'dap-hydra)))
   :bind
